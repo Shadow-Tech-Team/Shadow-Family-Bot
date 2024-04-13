@@ -1,0 +1,33 @@
+{
+  "name": "shadow-family-bot",
+  "version": "1.0.0",
+  "description": "Shadow Family Discord Bot Created By Shadow Tech Team",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "BiG ADLER (Shadow Tech Team)",
+  "license": "ISC",
+  "dependencies": {
+    "@overextended/oxmysql": "^1.3.0",
+    "canvas": "^2.11.2",
+    "chalk": "^5.2.0",
+    "craiyon": "^2.0.0",
+    "discord-html-transcripts": "^3.1.4",
+    "discord.js": "^14.11.0",
+    "djs-commander": "^0.0.50",
+    "dotenv": "^16.3.1",
+    "es-dirmodule": "^1.0.0",
+    "fs": "^0.0.1-security",
+    "got": "^13.0.0",
+    "mongoose": "^7.3.1",
+    "mysql": "^2.18.1",
+    "openai": "^3.3.0",
+    "path": "^0.12.7",
+    "replicate": "^0.12.3",
+    "rss-parser": "^3.13.0",
+    "superagent": "^8.0.9",
+    "url": "^0.11.1"
+  }
+}
