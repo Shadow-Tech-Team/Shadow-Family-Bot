@@ -7,23 +7,15 @@ const parser = new Parser();
 export default class YouTubeNotifHandler {
 
     static async Init(client) {
-
         try {
-
             client.checkUpdates = async () => {
-
                 let Setups = await YTNotify.find()
 
                 if (!Setups) return;
-
                 if (Setups.length > 1) {
-
                     await Promise.all(Setups.map(async data => {
-
                         setTimeout(async () => {
-
                             try {
-
                                 let VideoData = await parser.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${data.ID}`);
                                 if (!VideoData) return;
 
@@ -54,15 +46,11 @@ export default class YouTubeNotifHandler {
                                         await ChannelID.send({content: `**${author}** hamin alan video **${title}** ro Upload kard.\n\n${link}`});
                                     }
                                 }
-
                             } catch (error) {
                                 Messages.Error("YouTubeNotifHandler => Init -> One", error);
                             }
-
                         }, 5000)
-
                     }))
-
                 } else {
                     try {
                         let VideoData = await parser.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${Setups[0].ID}`);
