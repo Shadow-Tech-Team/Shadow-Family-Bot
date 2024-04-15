@@ -4,12 +4,13 @@ import ModalCreator from "../Modal/ModalCreator.js";
 import Config from "../../Config/Config.json"  assert { type: "json" };
 import EmbedCreator from "../Embed/EmbedCreator.js";
 import Messages from "../Messages/Messages.js";
-import { log, error } from "console";
+import { log } from "console";
 import UserViewManager from "../UserViewManager/UserViewManager.js";
 import UserManagement from "../UserManagement/UserManagement.js";
 import CrashHandler from "./CrashHandler.js";
 import Welcome from "../Welcome/Welcome.js";
 import DutyHandler from "../DutyHandler/DutyHandler.js";
+import YouTubeNotifHandler from "./YouTubeNotifHandler.js";
 
 export default class EventHandler {
 
@@ -23,6 +24,7 @@ export default class EventHandler {
                 log(`Memory Usage ${chalk.green(MemoryUsage)} MB`)
                 log(chalk.greenBright(`Bot is Online Sir! Logged in as ${c.user.tag}`));
                 this.SetStatus(c, ActivityType)
+                setInterval(async ()  => YouTubeNotifHandler.Init(client), 10000)
             });
         } catch (error) {
             Messages.Error('EventHandler => Client Ready', error)

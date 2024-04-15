@@ -8,7 +8,8 @@ export default class YouTubeNotifHandler {
 
     static async Init(client) {
         try {
-            client.checkUpdates = async () => {
+
+                console.log('Init Start');
                 let Setups = await YTNotify.find()
 
                 if (!Setups) return;
@@ -22,7 +23,7 @@ export default class YouTubeNotifHandler {
                                 let GuildID = await client.guilds.cache.get(`${data.GuildID}`);
                                 if (!GuildID) return;
 
-                                let ChannelID = await guild.channels.cache.get(`${data.Channel}`);
+                                let ChannelID = await client.channels.cache.get(`${data.Channel}`);
                                 if (!ChannelID) return;
 
                                 let { link, author, title, id } = VideoData.items[0];
@@ -45,6 +46,12 @@ export default class YouTubeNotifHandler {
                                     } else {
                                         await ChannelID.send({content: `**${author}** hamin alan video **${title}** ro Upload kard.\n\n${link}`});
                                     }
+                                } else {
+                                    if (PingRole !== 'none') {
+                                        await ChannelID.send({content: `${PingRole} \n\n **${author}** Hamin alan video **${title}** ro upload kard.\n\n${link}`});
+                                    } else {
+                                        await ChannelID.send({content: `**${author}** Hamin alan video **${title}** ro upload kard.\n\n${link}`})
+                                    }
                                 }
                             } catch (error) {
                                 Messages.Error("YouTubeNotifHandler => Init -> One", error);
@@ -53,18 +60,22 @@ export default class YouTubeNotifHandler {
                     }))
                 } else {
                     try {
+                        if (!Setups[0]) return;
+
                         let VideoData = await parser.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${Setups[0].ID}`);
                         if (!VideoData) return;
 
                         let GuildID = await client.guilds.cache.get(`${Setups[0].GuildID}`);
                         if (!GuildID) return;
 
-                        let ChannelID = await guild.channels.cache.get(`${Setups[0].Channel}`);
+                        let ChannelID = await client.channels.cache.get(`${Setups[0].Channel}`);
                         if (!ChannelID) return;
 
                         let { link, author, title, id } = VideoData.items[0];
-                        if (Setups[0].Latest.includes(id)) return;
-                        else {
+
+                        if (Setups[0].Latest.includes(id)) {
+                            return;
+                        } else {
                             await YTNotify.updateOne({ GuildID: Setups[0].GuildID, ID: Setups[0].ID }, { $push: { Latest: id } })
                         }
 
@@ -78,13 +89,13 @@ export default class YouTubeNotifHandler {
 
                         if (Setups[0].Message) {
                             if (PingRole !== 'none') {
-                                await ChannelID.send({content: `${PingRole} \n\n${Setups[0].Message.replace('{author}', author).replace('{title}', title).replace('{link}', link)}`});
+                                await ChannelID.send({content: `${PingRole}\n${Setups[0].Message.replace('{author}', author).replace('{title}', title).replace('{link}', link)}`});
                             } else {
                                 await ChannelID.send({content: `${Setups[0].Message.replace('{author}', author).replace('{title}', title).replace('{link}', link)}`});
                             }
                         } else {
                             if (PingRole !== 'none') {
-                                await ChannelID.send({content: `${PingRole} \n\n **${author}** Hamin alan video **${title}** ro upload kard.\n\n${link}`});
+                                await ChannelID.send({content: `${PingRole}\n**${author}** Hamin alan video **${title}** ro upload kard.\n\n${link}`});
                             } else {
                                 await ChannelID.send({content: `**${author}** Hamin alan video **${title}** ro upload kard.\n\n${link}`})
                             }
@@ -92,8 +103,10 @@ export default class YouTubeNotifHandler {
                     } catch (error) {
                         Messages.Error("YouTubeNotifHandler => Init -> Two", error);
                     }
+                    console.log('Init End');
                 }
-            }
+
+
         } catch (error) {
             Messages.Error("YouTubeNotifHandler => Init", error);
         }
