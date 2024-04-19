@@ -19,11 +19,6 @@ const GuildSetting = new Schema({
     Log: {
         type: String,
         required: true
-    },
-
-    WelcomeChannel: {
-        type: String,
-        required: true
     }
 })
 

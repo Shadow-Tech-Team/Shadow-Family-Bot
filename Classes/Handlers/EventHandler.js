@@ -23,7 +23,6 @@ export default class EventHandler {
                 log(`Discord.js Version ${chalk.green(version)}`)
                 log(`Memory Usage ${chalk.green(MemoryUsage)} MB`)
                 log(chalk.greenBright(`Bot is Online Sir! Logged in as ${c.user.tag}`));
-                this.SetStatus(c, ActivityType)
                 setInterval(async ()  => YouTubeNotifHandler.Init(client), 10000)
             });
         } catch (error) {
@@ -34,7 +33,11 @@ export default class EventHandler {
     static WelcomeMessageHandler(client, Events) {
         try {
             client.on(Events.GuildMemberAdd, async interaction => {
-                Welcome.Welcome(interaction, client)
+                if (Config.Options.WelcomeImage == true) {
+                    Welcome.WelcomeImage(interaction, client)
+                } else if (Config.Options.WelcomeText == true) {
+                    Welcome.WelcomeText(interaction, client)
+                }
                 // console.log(member)
             })
         } catch (error) {

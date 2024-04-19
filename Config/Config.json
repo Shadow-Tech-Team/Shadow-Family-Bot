@@ -1,9 +1,15 @@
 {
-    "Main" : {
+    "Main": {
         "Token": "MTIyODY5MTA0MjEzMjU2MjA3MQ.G0z2VM.Oxms5NKIy2W3Sbax82hDXG6egYlLfTQiUvLo_U",
+        "Developer": "809903662947893319",
         "ApplicationID": "1228691042132562071",
         "GuildID": "610980781053050916",
         "LoginPanelChannel": "1228692729672892466"
+    },
+    "Options": {
+        "MySQL": false,
+        "WelcomeImage": false,
+        "WelcomeText": true
     },
     "OpenAI": {
         "OpenAiApiKey": "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",

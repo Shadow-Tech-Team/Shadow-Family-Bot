@@ -7,24 +7,6 @@ const Guild = new Schema({
         required: true
     },
 
-    // ContactUsChannel: {
-    //     unique: true,
-    //     type: String,
-    //     required: true
-    // },
-
-    // FeedbackUsChannel: {
-    //     unique: true,
-    //     type: String,
-    //     required: true
-    // },
-
-    // LogChannel: {
-    //     unique: true,
-    //     type: String,
-    //     required: true
-    // },
-
     GuildName: String,
     GuildIcon: String
 })

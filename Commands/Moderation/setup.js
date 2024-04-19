@@ -10,14 +10,12 @@ export default {
     .setDescription("Setup Bot Config")
     .addChannelOption(channel => channel.setName('log').setDescription('Choose Log Channel').setRequired(true))
     .addChannelOption(channel => channel.setName('feedback').setDescription('Choose Feedback Channel').setRequired(true))
-    .addChannelOption(channel => channel.setName('welcome').setDescription('Choose Welcome Channel').setRequired(true))
     .addChannelOption(channel => channel.setName('contact').setDescription('Choose Contact Us Channel').setRequired(true)),
     async execute(interaction, client) {
 
         const LogChannel = interaction.options.getChannel('log')
         const FeedbackChannel = interaction.options.getChannel('feedback')
         const ContactUsChannel = interaction.options.getChannel('contact')
-        const WelcomeChannel = interaction.options.getChannel('welcome')
 
         const Embed = new EmbedCreator(client, interaction)
         const MessageEmbed = await Embed.ReturnDefault(Colors.Red, 'Settings Has Been Saved', '✅ Setting Channel Dar Database Save Shod.')
@@ -26,7 +24,7 @@ export default {
         // Check Member Permissions
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return interaction.reply({embeds: [CantDoActionEmbedMessage], ephemeral: true })
 
-        await ServerData.SetChannelSetting(interaction, client, ContactUsChannel.id, FeedbackChannel.id, LogChannel.id, WelcomeChannel.id)
+        await ServerData.SetChannelSetting(interaction, client, ContactUsChannel.id, FeedbackChannel.id, LogChannel.id)
 
         await interaction.reply({
             embeds: [MessageEmbed]

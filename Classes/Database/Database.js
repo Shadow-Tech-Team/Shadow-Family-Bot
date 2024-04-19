@@ -1,18 +1,22 @@
+import Config from "../../Config/Config.json" assert { type: "json"}
 import chalk from "chalk";
 import { connect } from "mongoose";
 import mysql from "mysql";
+import Messages from "../Messages/Messages.js";
+import AddPointToUser from "../../Modules/AddPointToUser.js";
+import RemovePointFromUser from "../../Modules/RemovePointFromUser.js";
+import RemoveDuplicate from "../../Modules/RemoveDuplicate.js";
+import ConvertSecond from "../../Modules/ConvertSecond.js";
+
+// Import Schemas
 import Guild from "../../Schemas/Guild.js";
 import TicketSetting from "../../Schemas/TicketSetting.js";
 import TicketOptions from "../../Schemas/TicketOptions.js";
 import Ticket from "../../Schemas/Ticket.js";
 import GuildSetting from "../../Schemas/GuildSetting.js";
 import UserSetting from "../../Schemas/UserSetting.js"
-import Messages from "../Messages/Messages.js";
-import AddPointToUser from "../../Modules/AddPointToUser.js";
-import RemovePointFromUser from "../../Modules/RemovePointFromUser.js";
-import RemoveDuplicate from "../../Modules/RemoveDuplicate.js";
 import UserDutyHandler from "../../Schemas/UserDutyHandler.js";
-import ConvertSecond from "../../Modules/ConvertSecond.js";
+import Welcome from "../../Schemas/Welcome.js";
 
 let Gangs = []
 
@@ -34,26 +38,28 @@ export default class Database {
             })
 
             // Conenct to the MySQL server
-            const MySQLConnection = mysql.createConnection({
-                host     : 'localhost',
-                user     : 'root',
-                password : '',
-                database : 'plife'
-            })
+            if (Config.Options.MySQL == true) {
+                const MySQLConnection = mysql.createConnection({
+                    host     : 'localhost',
+                    user     : 'root',
+                    password : '',
+                    database : 'plife'
+                })
 
-            MySQLConnection.connect(function(err) {
-                if (err) {
-                    console.log(`[ Database ]: ${chalk.red(`${chalk.yellow('MySQL DB')} Connection Problem!`)}, Error Message: ${e}`)
-                    return;
-                }
-                console.log(`[ Database ]: ${chalk.green(`${chalk.yellow('MySQL DB')} Connection Successfully Established!`)}`)
-            })
+                MySQLConnection.connect(function(err) {
+                    if (err) {
+                        console.log(`[ Database ]: ${chalk.red(`${chalk.yellow('MySQL DB')} Connection Problem!`)}, Error Message: ${e}`)
+                        return;
+                    }
+                    console.log(`[ Database ]: ${chalk.green(`${chalk.yellow('MySQL DB')} Connection Successfully Established!`)}`)
+                })
 
-            global.MySQL = MySQLConnection
+                global.MySQL = MySQLConnection
 
-            await setInterval(() => {
-                this.#GetWhitlistedGangs()
-            }, 100)
+                await setInterval(() => {
+                    this.#GetWhitlistedGangs()
+                }, 100)
+            }
 
         } catch (error) {
             Messages.Error('Database => Connect', error)
@@ -178,7 +184,7 @@ export default class Database {
         }
     }
 
-    async SetChannelSetting(interaction, client, ContactUsLogsChannel, FeedbackUsChannel, Log, WelcomeChannel) {
+    async SetChannelSetting(interaction, client, ContactUsLogsChannel, FeedbackUsChannel, Log) {
         try {
             let ChannelOptions = await GuildSetting.findOne({GuildID: interaction.guild.id})
 
@@ -187,8 +193,7 @@ export default class Database {
                     GuildID: interaction.guild.id,
                     ContactUsLogsChannel: ContactUsLogsChannel,
                     FeedbackUsChannel: FeedbackUsChannel,
-                    Log: Log,
-                    WelcomeChannel: WelcomeChannel
+                    Log: Log
                 })
 
                 await ChannelOptions.save().catch((e) => {
@@ -200,6 +205,49 @@ export default class Database {
             }
         } catch (error) {
             Messages.Error('Database => Set Channel Setting', error)
+        }
+    }
+
+    async SetWelcomeSetting(interaction, client, ChannelID, WelcomeText) {
+        try {
+            let ChannelOptions = await Welcome.findOne({GuildID: interaction.guild.id})
+
+            if (!ChannelOptions) {
+                ChannelOptions = await new Welcome({
+                    GuildID: interaction.guild.id,
+                    ChannelID: ChannelID,
+                    WelcomeText: WelcomeText
+                })
+
+                await ChannelOptions.save().catch((e) => {
+                    console.log(`[ Database ]: ${chalk.red('Failed to Save Welcome Settings in Database')}, Error ==> ${e}.`)
+                })
+
+            } else {
+                console.log(`[ Database ]: ${chalk.red('You Saved Welcome Settings Befor.')}.`)
+            }
+        } catch (error) {
+            Messages.Error('Database => Set Welcome Setting', error)
+        }
+    }
+
+    async GetWelcomeSetting(interaction) {
+        try {
+            let WelcomeOptions = await Welcome.findOne({GuildID: interaction.guild.id})
+
+            if (WelcomeOptions) {
+
+                return {
+                    GuildID: WelcomeOptions.GuildID,
+                    ChannelID: WelcomeOptions.ChannelID,
+                    WelcomeMessage: WelcomeOptions.WelcomeText
+                }
+
+            } else {
+                console.log(`[ Database ]: ${chalk.red('You Don\'t Have Any Welcome Setting Data in Database.')}.`)
+            }
+        } catch (error) {
+            Messages.Error('Database => Get Welcome Setting', error)
         }
     }
 
