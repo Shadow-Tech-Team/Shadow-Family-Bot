@@ -11,6 +11,7 @@ import CrashHandler from "./CrashHandler.js";
 import Welcome from "../Welcome/Welcome.js";
 import DutyHandler from "../DutyHandler/DutyHandler.js";
 import YouTubeNotifHandler from "./YouTubeNotifHandler.js";
+import StatusHandler from "./StatusHandler.js";
 
 export default class EventHandler {
 
@@ -42,6 +43,17 @@ export default class EventHandler {
             })
         } catch (error) {
             Messages.Error("EventHandler => WelcomeMessageHandler", error)
+        }
+    }
+
+    static OfflineOnlineStatusHandler(client, Events) {
+        try {
+            client.on(Events.PresenceUpdate, async (oldPresence, newPresence) => {
+                // StatusHandler.Init(interaction, client, OldStatus, NewStatus)
+                // console.log(oldPresence.status, newPresence.status);
+            })
+        } catch (error) {
+            Messages.Error("EventHandler => OfflineOnlineStatusHandler", error)
         }
     }
 
@@ -183,6 +195,7 @@ export default class EventHandler {
             this.InteractionCreate(client, Events)
             this.ClientReady(client, Events, ActivityType)
             this.WelcomeMessageHandler(client, Events)
+            this.OfflineOnlineStatusHandler(client, Events)
             CrashHandler.Load()
         } catch (error) {
             Messages.Error('EventHandler => Load Events', error)
